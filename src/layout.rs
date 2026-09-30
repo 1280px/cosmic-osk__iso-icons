@@ -65,6 +65,7 @@ impl KeyLevel {
             "Delete" => "Del",
             "Escape" => "Esc",
             "ISO_Level3_Shift" => "AltGr",
+            "ISO_Level5_Shift" => "Lv5",
             "Insert" => "Ins",
             "Multi_key" => "Comp",
             "Next" => "PgDn",
@@ -144,7 +145,13 @@ impl KeyLevel {
                 sticky: true,
             },
             Keysym::ISO_Level3_Shift => KeyKind::Mod {
-                name: xkb::MOD_NAME_ISO_LEVEL3_SHIFT,
+                // https://github.com/rust-x-bindings/xkbcommon-rs/blob/master/src/xkb/mod.rs#L280
+                name: "LevelThree",
+                sticky: true,
+            },
+            Keysym::ISO_Level5_Shift => KeyKind::Mod {
+                // https://github.com/rust-x-bindings/xkbcommon-rs/blob/master/src/xkb/mod.rs#L281
+                name: "LevelFive",
                 sticky: true,
             },
             Keysym::Shift_L | Keysym::Shift_R => KeyKind::Mod {
@@ -171,26 +178,29 @@ impl KeyLevel {
 
         let icon = match sym {
             Keysym::BackSpace => Some(widget::icon::from_name("edit-clear-symbolic").handle()),
+            Keysym::Down => Some(widget::icon::from_name("pan-down-symbolic").handle()),
+            Keysym::ISO_Next_Group | Keysym::ISO_Prev_Group => {
+                Some(widget::icon::from_name("web-browser-symbolic").handle())
+            }
+            Keysym::Left => Some(widget::icon::from_name("pan-start-symbolic").handle()),
             Keysym::Return => Some(
                 widget::icon::from_svg_bytes(include_bytes!("../res/keycap-return.svg"))
                     .symbolic(true),
             ),
-            Keysym::Down => Some(widget::icon::from_name("pan-down-symbolic").handle()),
-            Keysym::Left => Some(widget::icon::from_name("pan-start-symbolic").handle()),
+            Keysym::Right => Some(widget::icon::from_name("pan-end-symbolic").handle()),
             Keysym::Shift_L | Keysym::Shift_R => Some(
                 widget::icon::from_svg_bytes(include_bytes!("../res/keycap-shift.svg"))
                     .symbolic(true),
             ),
-            Keysym::Right => Some(widget::icon::from_name("pan-end-symbolic").handle()),
             Keysym::Up => Some(widget::icon::from_name("pan-up-symbolic").handle()),
             Keysym::XF86_AudioNext => {
                 Some(widget::icon::from_name("media-seek-forward-symbolic").handle())
             }
-            Keysym::XF86_AudioPlay => {
-                Some(widget::icon::from_name("media-playback-start-symbolic").handle())
-            }
             Keysym::XF86_AudioPause => {
                 Some(widget::icon::from_name("media-playback-pause-symbolic").handle())
+            }
+            Keysym::XF86_AudioPlay => {
+                Some(widget::icon::from_name("media-playback-start-symbolic").handle())
             }
             Keysym::XF86_AudioPrev => {
                 Some(widget::icon::from_name("media-seek-backward-symbolic").handle())
